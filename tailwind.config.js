@@ -18,12 +18,12 @@ module.exports = {
     },
     extend: {
       colors: {
-        accentPalette: "#344e41",
-        textPalette: "#3a5a40",
-        textAccentPalette: "#ffffff",
-        accent2Palette: "#588157",
-        hoverPalette: "#a3b18a",
-        bgPalette: "#dad7cd",
+        accentPalette: "#333333",
+        textPalette: "#333333",
+        textAccentPalette: "#3E3232",
+        accent2Palette: "#7E6363",
+        hoverPalette: "#706C61",
+        bgPalette: "#FFFFFF",
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
@@ -79,5 +79,11 @@ module.exports = {
       },
     },
   },
+  screens: {
+      sm: '640px',
+      md: '768px',
+      lg: '1024px',
+      xl: '1280px',
+    },
   plugins: [require("tailwindcss-animate")],
 }

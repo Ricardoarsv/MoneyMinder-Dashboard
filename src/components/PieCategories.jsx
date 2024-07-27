@@ -15,7 +15,7 @@ import {
 
 export default function PieCategories({ chartConfig, chartData, totalLogs, Range }) {
     return(
-        <Card className="flex flex-col min-w-60">
+        <Card className="flex flex-col min-w-60 w-full max-h-96">
             <CardHeader className="items-center pb-0">
                 <CardTitle>Spent categories</CardTitle>
                 <CardDescription>{Range}- Today</CardDescription>
@@ -70,11 +70,15 @@ export default function PieCategories({ chartConfig, chartData, totalLogs, Range
                 </PieChart>
                 </ChartContainer>
             </CardContent>
-            <CardFooter className="flex-row items-start justify-center gap-2 text-sm">
+            <CardFooter className="overflow-y-auto max-h-20 flex flex-row flex-wrap items-start justify-center gap-2 text-sm">
                 {chartData.map((data) => (
-                <div key={data.category} className="flex flex-col justify-center items-center gap-2">
-                    <span>{data.category}</span>
-                    <span>{data.amount}</span>
+                <div key={data.id} className="flex flex-col justify-center items-center gap-2">
+                    <div className="flex flex-row items-center gap-2">
+                        <div className="flex w-5 h-5 min-w-5 rounded-[0.35rem] justify-center items-center" style={{ backgroundColor: data.fill || 'gray' }}>
+                            <span className="text-white font-bold">{(data.amount)}</span>
+                        </div>
+                        <span>{data.category}</span>
+                    </div>
                 </div>
                 ))}
             </CardFooter>

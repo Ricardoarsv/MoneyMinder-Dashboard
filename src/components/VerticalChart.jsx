@@ -1,5 +1,4 @@
 import { Bar, BarChart, CartesianGrid, LabelList, XAxis } from "recharts"
-
 import {
   Card,
   CardContent,
@@ -16,13 +15,13 @@ import {
 
 export default function VerticalChart({ chartData, chartConfig, Range }) {
   return (
-    <Card className="w-70">
+    <Card className="w-full max-h-96 flex flex-col justify-between">
       <CardHeader>
         <CardTitle>Where's my money????</CardTitle>
         <CardDescription>{Range} - Today</CardDescription>
       </CardHeader>
       <CardContent>
-        <ChartContainer className="height-full" config={chartConfig}>
+        <ChartContainer className="max-h-96 max-w-96" config={chartConfig}>
           <BarChart
             accessibilityLayer
             data={chartData}
@@ -53,11 +52,14 @@ export default function VerticalChart({ chartData, chartConfig, Range }) {
           </BarChart>
         </ChartContainer>
       </CardContent>
-      <CardFooter className="flex-row items-start justify-center gap-2 text-sm">
+      <CardFooter className="overflow-y-auto max-h-20 flex flex-row flex-wrap items-start justify-center gap-2 text-sm">
           {chartData.map((data) => (
-          <div key={data.category} className="flex flex-col justify-center items-center gap-2">
-              <span>{data.category}</span>
-              <span>{(data.amount).toLocaleString()}</span>
+          <div key={data.id} className="flex flex-col justify-center items-center gap-2">
+              <div className="flex flex-row items-center gap-2">
+                <div className="w-5 h-5 min-w-5 rounded-[0.35rem]" style={{ backgroundColor: data.fill || 'gray' }}></div>
+                <span>{data.type}</span>
+              </div>
+              <span>{(data.amount).toLocaleString("en-US", { style: "currency", currency: "USD" })}</span>
           </div>
           ))}
       </CardFooter>

@@ -21,8 +21,9 @@ export default function AddDrawer({ onAdd, open, onClose, selectTypes, selectCat
     selectCategories: PropTypes.array.isRequired,
   };
 
-  const [type, setType] = useState(selectTypes.length > 0 ? selectTypes[0].name : '');
+  const [type, setType] = useState(selectTypes);
   const [category, setCategory] = useState(selectCategories.length > 0 ? selectCategories[0].name : '');
+  const [avaibleCategories, setAvaibleCategories] = useState(selectCategories);
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [amount, setAmount] = useState('');
@@ -30,12 +31,30 @@ export default function AddDrawer({ onAdd, open, onClose, selectTypes, selectCat
 
   useEffect(() => {
     if (selectTypes.length > 0) {
-      setType(selectTypes[0].name);
+      setType(selectTypes[0].id);
     }
-    if (selectCategories.length > 0) {
-      setCategory(selectCategories[0].name);
+  }, [selectTypes]);
+
+  useEffect(() => {
+    // Filtrar categorías disponibles según el tipo seleccionado
+    const filteredCategories = selectCategories.filter(category => category.category_type === type);
+  
+    // Mapear solo los nombres de las categorías filtradas
+    const availableCategoryNames = filteredCategories.map(category => category);
+  
+    // Actualizar el estado de avaibleCategories
+    setAvaibleCategories(availableCategoryNames);
+
+    // Si hay categorías disponibles, establecer la primera categoría como seleccionada por defecto
+    if (availableCategoryNames.length > 0) {
+      setCategory(availableCategoryNames[0].id);
     }
-  }, [selectTypes, selectCategories]);
+  }, [type, selectCategories]);
+
+  function handleTypeChange(value) {
+    const intVal = parseInt(value);
+    setType(intVal);
+  }
 
   const handleSubmit = () => {
     const dateNow = new Date().toISOString().slice(0, 10);
@@ -58,14 +77,15 @@ export default function AddDrawer({ onAdd, open, onClose, selectTypes, selectCat
         };
 
         onAdd(newConcept);
-        setType(selectTypes.length > 0 ? selectTypes[0].name : '');
-        setCategory(selectCategories.length > 0 ? selectCategories[0].name : '');
+        setType(selectTypes.length > 0 ? selectTypes[0].id : '');
+        setCategory(selectCategories.length > 0 ? selectCategories[0].id : '');
         setTitle('');
         setDescription('');
         setAmount('');
         onClose(); 
     }
-    };
+  };
+
 
   return (
     <Drawer open={open}>
@@ -77,14 +97,19 @@ export default function AddDrawer({ onAdd, open, onClose, selectTypes, selectCat
           </DrawerHeader>
           <div className="p-4 pb-0">
             <div className="mt-3 space-y-4">
+            {selectCategories.length === 0 && (
+              <div className="fixed flex justify-center items-center w-[22rem] h-32 bg-[#5591287b]">
+                <h1 className='text-red-600 max-w-[22rem] p-8'>Debes crear un tipo de categoria y una categoria para empezar a agregar</h1>
+              </div>
+            )}
               <select 
                 className="w-full p-2 border border-gray-300 rounded"
                 id='Type'
-                onChange={(e) => setType(e.target.value)}
+                onChange={(e) => handleTypeChange(e.target.value)}
                 value={type}
               > 
-                {selectTypes.map((type) => (
-                  <option key={type.id} value={type.name}>{type.name}</option>
+                {selectTypes.filter((type) => type.active == true).map((type) => (
+                  <option key={type.id} value={type.id}>{type.typeName}</option>
                 ))}
               </select>
               <select 
@@ -93,8 +118,8 @@ export default function AddDrawer({ onAdd, open, onClose, selectTypes, selectCat
                 onChange={(e) => setCategory(e.target.value)}
                 value={category}
               > 
-                {selectCategories.map((category) => (
-                  <option key={category.id} value={category.name}>{category.name}</option>
+                {avaibleCategories.filter((category) => category.active == true).map((category) => (
+                  <option key={category.id} value={category.id}>{category.title}</option>
                 ))}
               </select>
               <input
@@ -121,7 +146,7 @@ export default function AddDrawer({ onAdd, open, onClose, selectTypes, selectCat
             </div>
           </div>
           <DrawerFooter>
-            <Button onClick={handleSubmit}>Submit</Button>
+            <Button onClick={selectCategories.length != 0 && (handleSubmit)}>Submit</Button>
             <DrawerClose asChild>
               <Button variant="outline" onClick={onClose}>Cancel</Button>
             </DrawerClose>
